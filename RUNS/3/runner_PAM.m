@@ -5,24 +5,23 @@ clc
 close all
 
 % Directory
-folder = "/work/users/x/y/xyliu/PAM_Best_Rayleigh_Model_InitialSize_HighResolution/res_tau1.0_p2_alpha1_N700";
+folder = "RES";
 mkdir(folder)
+BASE_FOLDER = "../../";
+addpath(BASE_FOLDER)
 
 
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
 batch_omega   = 2:0.1:4;
-%batch_omega   = 2.50;
-batch_epsilon = [0:0.1:0.9 0.95];
-%batch_epsilon = [0.95];
+batch_epsilon = 0:0.1:0.9;
 
 [batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
 
 numsimulations = size(batch_omega(:),1);
 
-parfor i=1:numsimulations
+for i=1:numsimulations
 
-    
     % Model parameters
     N       = 700;                % Number of particles
     tau     = 1.0;                % Relaxation time
@@ -38,10 +37,10 @@ parfor i=1:numsimulations
     
     % Collect parameters in structure
     p = struct('N', {N}, 'tau', {tau}, 'epsilon', {epsilon},...
-        'omega', {omega}, 'alpha', {alpha}, 'p', {p_repul}, 'RelTol', {RelTol}, 'AbsTol', {AbsTol})
+        'omega', {omega}, 'alpha', {alpha}, 'p', {p_repul}, 'RelTol', {RelTol}, 'AbsTol', {AbsTol});
     
     % Simulation time
-    times_per_period  = 20;           % Number of points in tiem saved per period
+    times_per_period  = 20;           % Number of points in time saved per period
     number_of_periods = 200;          % Number of total periods for simulation
     tspan = 0:(T/times_per_period):(T*number_of_periods);
 
@@ -98,9 +97,5 @@ end
 
 
 function parsave(fname, p,ti,xi,yi,ui,vi)
-    save(fname)
+    save(fname, 'p','ti','xi','yi','ui','vi')
 end
-
-
-    
-
