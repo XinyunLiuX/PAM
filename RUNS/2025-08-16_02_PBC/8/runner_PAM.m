@@ -84,9 +84,9 @@ for i=1:numsimulations
                 error("Particle Number is Not Compatible with Initial Conditions")
             end
         case 'PBC'
-            box_length = 2*VAR_R;
-            x0 = box_length*rand(N,1);
-            y0 = box_length*rand(N,1);
+           p.box_length = 2*VAR_R;
+            x0 = p.box_length*rand(N,1);
+            y0 = p.box_length*rand(N,1);
             u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
             v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
     end
