@@ -1,2 +1,0 @@
-# PAM
-PAM particle simulation
