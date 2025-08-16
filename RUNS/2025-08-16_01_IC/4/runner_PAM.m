@@ -7,8 +7,11 @@ close all
 % Directory
 folder = "RES";
 mkdir(folder)
-BASE_FOLDER = "../../";
+BASE_FOLDER = "../../../";
 addpath(BASE_FOLDER)
+
+VAR_IC = 'vortex';
+VAR_save = 'last';
 
 
 % PARAMETERS FOR BATCH
@@ -56,17 +59,30 @@ for i=1:numsimulations
     end
 
     % Initial conditions
-    rng("shuffle")
+    switch Var_IC 
+        case 'random'
+            rng("shuffle")
 
-    % Random radial coordinate and angle
-    R = 10;
-    r = R^2.*rand(N,1);
-    theta = 2*pi*rand(N,1);
+            % Random radial coordinate and angle
+            R = 10;
+            r = R^2.*rand(N,1);
+            theta = 2*pi*rand(N,1);
 
-    x0 = sqrt(r).*cos(theta);
-    y0 = sqrt(r).*sin(theta);
-    u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
-    v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+            x0 = sqrt(r).*cos(theta);
+            y0 = sqrt(r).*sin(theta);
+            u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+            v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+        case 'vortex'
+            loaded_data = load('vortexIC.m');
+            x0 = loaded_data.x0;
+            y0 = loaded_data.y0;
+            u0 = loaded_data.u0;
+            v0 = loaded_data.v0;
+            if N ~= length(x0)
+                error("Particle Number is Not Compatible with Initial Conditions")
+            end
+    end
+
 
     y0 = [x0;y0;u0;v0];
 
@@ -82,7 +98,12 @@ for i=1:numsimulations
 
 
     % Save data for last 6 periods
-    saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
+    switch VAR_save
+        case 'last'
+            saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
+        case 'full'
+            saverange = 1:size(t_sol,1);
+    end
 
     ti = t_sol(saverange);
     xi = xi_sol(saverange,:);

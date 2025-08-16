@@ -7,14 +7,19 @@ close all
 % Directory
 folder = "RES";
 mkdir(folder)
-BASE_FOLDER = "../../";
+BASE_FOLDER = "../../../";
 addpath(BASE_FOLDER)
+
+VAR_IC = 'PBC';
+VAR_save = 'full';
+
+VAR_R = 10;
 
 
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
-batch_omega   = 2:0.1:4;
-batch_epsilon = 0:0.1:0.9;
+batch_omega   = [0.1 1 2 3 4];
+batch_epsilon = 0:0.3:0.9;
 
 [batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
 
@@ -23,7 +28,7 @@ numsimulations = size(batch_omega(:),1);
 for i=1:numsimulations
 
     % Model parameters
-    N       = 700;                % Number of particles
+    N       = 900;                % Number of particles
     tau     = 1.0;                % Relaxation time
     epsilon = batch_epsilon(i);   % Forcing amplitude (needs to be < 1)
     omega   = batch_omega(i);     % Forcing frequency
@@ -32,8 +37,8 @@ for i=1:numsimulations
     p_repul = 2;                  % Interaction force power (must be integer > 1)
 
     % Numerical tolerances
-    RelTol = 1e-8;
-    AbsTol = 1e-8;
+    RelTol = 1e-6;
+    AbsTol = 1e-6;
     
     % Collect parameters in structure
     p = struct('N', {N}, 'tau', {tau}, 'epsilon', {epsilon},...
@@ -56,23 +61,42 @@ for i=1:numsimulations
     end
 
     % Initial conditions
-    rng("shuffle")
+     rng("shuffle")
+     
+    switch Var_IC 
+        case 'random'
+            % Random radial coordinate and angle
+            R = VAR_R;
+            r = R^2.*rand(N,1);
+            theta = 2*pi*rand(N,1);
 
-    % Random radial coordinate and angle
-    R = 10;
-    r = R^2.*rand(N,1);
-    theta = 2*pi*rand(N,1);
+            x0 = sqrt(r).*cos(theta);
+            y0 = sqrt(r).*sin(theta);
+            u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+            v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+        case 'vortex'
+            loaded_data = load('vortexIC.m');
+            x0 = loaded_data.x0;
+            y0 = loaded_data.y0;
+            u0 = loaded_data.u0;
+            v0 = loaded_data.v0;
+            if N ~= length(x0)
+                error("Particle Number is Not Compatible with Initial Conditions")
+            end
+        case 'PBC'
+            box_length = 2*VAR_R;
+            x0 = box_length*rand(N,1);
+            y0 = box_length*rand(N,1);
+            u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+            v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
+    end
 
-    x0 = sqrt(r).*cos(theta);
-    y0 = sqrt(r).*sin(theta);
-    u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
-    v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
 
     y0 = [x0;y0;u0;v0];
 
     % ODE solver
     opts = odeset('RelTol',RelTol,'AbsTol',AbsTol);
-    [t_sol,y] = ode45(@(t,y) active_particles_in_well(t,y,p), tspan, y0, opts);
+    [t_sol,y] = ode45(@(t,y) active_particles_PBC(t,y,p), tspan, y0, opts);
 
     % Results (Rows is time, and columns is particle id)
     xi_sol = y(:,      1:N);
@@ -82,13 +106,20 @@ for i=1:numsimulations
 
 
     % Save data for last 6 periods
-    saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
+    switch VAR_save
+        case 'last'
+            saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
+        case 'full'
+            saverange = 1:size(t_sol,1);
+    end
 
     ti = t_sol(saverange);
     xi = xi_sol(saverange,:);
     yi = yi_sol(saverange,:);
     ui = ui_sol(saverange,:);
     vi = vi_sol(saverange,:);
+    xi = position_apply_PBC(xi, p.box_length);
+    yi = position_apply_PBC(yi, p.box_length); 
 
     % Function to save file within parfor loop
     parsave(strcat(folder,"/",filename), p,ti,xi,yi,ui,vi)
