@@ -7,7 +7,7 @@ close all
 % Directory
 folder = "RES";
 mkdir(folder)
-BASE_FOLDER = "../../";
+BASE_FOLDER = "../../../";
 addpath(BASE_FOLDER)
 
 
