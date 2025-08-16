@@ -59,7 +59,7 @@ for i=1:numsimulations
     end
 
     % Initial conditions
-    switch Var_IC 
+    switch VAR_IC
         case 'random'
             rng("shuffle")
 

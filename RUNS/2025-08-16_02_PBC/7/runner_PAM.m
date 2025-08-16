@@ -63,7 +63,7 @@ for i=1:numsimulations
     % Initial conditions
      rng("shuffle")
      
-    switch Var_IC 
+    switch VAR_IC
         case 'random'
             % Random radial coordinate and angle
             R = VAR_R;
