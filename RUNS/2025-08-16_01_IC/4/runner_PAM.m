@@ -59,6 +59,7 @@ for i=1:numsimulations
     end
 
     % Initial conditions
+    x0 = []; y0 = []; u0 = []; v0 = [];
     switch VAR_IC
         case 'random'
             rng("shuffle")
@@ -73,7 +74,7 @@ for i=1:numsimulations
             u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
             v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
         case 'vortex'
-            loaded_data = load('vortexIC.m');
+            loaded_data = load('vortex_N700.mat');
             x0 = loaded_data.x0;
             y0 = loaded_data.y0;
             u0 = loaded_data.u0;
@@ -98,6 +99,7 @@ for i=1:numsimulations
 
 
     % Save data for last 6 periods
+    saverange = [];
     switch VAR_save
         case 'last'
             saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
