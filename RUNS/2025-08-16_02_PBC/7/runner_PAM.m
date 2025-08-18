@@ -25,7 +25,7 @@ batch_epsilon = 0:0.3:0.9;
 
 numsimulations = size(batch_omega(:),1);
 
-for i=1:numsimulations
+parfor i=1:numsimulations
 
     % Model parameters
     N       = 500;                % Number of particles
