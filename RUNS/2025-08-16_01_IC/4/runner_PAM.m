@@ -11,7 +11,7 @@ BASE_FOLDER = "../../../";
 addpath(BASE_FOLDER)
 
 VAR_IC = 'vortex';
-VAR_save = 'last';
+VAR_save = 'full';
 
 
 % PARAMETERS FOR BATCH
@@ -23,7 +23,7 @@ batch_epsilon = 0:0.1:0.9;
 
 numsimulations = size(batch_omega(:),1);
 
-for i=1:numsimulations
+parfor i=1:numsimulations
 
     % Model parameters
     N       = 700;                % Number of particles
@@ -74,7 +74,7 @@ for i=1:numsimulations
             u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
             v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
         case 'vortex'
-            IC_filePath = [BASE_FOLDER 'IC'];
+            IC_filePath = strcat(BASE_FOLDER, 'IC');
             loaded_data = load(fullfile(IC_filePath, 'vortex_N700.mat'));
             disp('Hit initial conditions.')
             x0 = loaded_data.x0;
