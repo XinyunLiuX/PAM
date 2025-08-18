@@ -74,7 +74,9 @@ for i=1:numsimulations
             u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
             v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
         case 'vortex'
-            loaded_data = load('vortex_N700.mat');
+            IC_filePath = [BASE_FOLDER 'IC'];
+            loaded_data = load(fullfile(IC_filePath, 'vortex_N700.mat'));
+            disp('Hit initial conditions.')
             x0 = loaded_data.x0;
             y0 = loaded_data.y0;
             u0 = loaded_data.u0;
