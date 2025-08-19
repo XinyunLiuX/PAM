@@ -18,7 +18,7 @@ VAR_R = 10;
 
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
-batch_omega   = [0.1 1 2 3 4];
+batch_omega   = [1 2 3 4];
 batch_epsilon = 0:0.3:0.9;
 
 [batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
@@ -28,7 +28,7 @@ numsimulations = size(batch_omega(:),1);
 parfor i=1:numsimulations
 
     % Model parameters
-    N       = 900;                % Number of particles
+    N       = 400;                % Number of particles
     tau     = 1.0;                % Relaxation time
     epsilon = batch_epsilon(i);   % Forcing amplitude (needs to be < 1)
     omega   = batch_omega(i);     % Forcing frequency
@@ -63,6 +63,7 @@ parfor i=1:numsimulations
     % Initial conditions
      rng("shuffle")
      
+     x0 = []; y0 = []; u0 = []; v0 = [];
     switch VAR_IC
         case 'random'
             % Random radial coordinate and angle
@@ -75,7 +76,9 @@ parfor i=1:numsimulations
             u0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
             v0 = -1 + 2*rand(N,1);  %Random velocity in interval (-1,1)
         case 'vortex'
-            loaded_data = load('vortexIC.m');
+            IC_filePath = strcat(BASE_FOLDER, 'IC');
+            loaded_data = load(fullfile(IC_filePath, 'vortex_N700.mat'));
+            disp('Hit initial conditions.')
             x0 = loaded_data.x0;
             y0 = loaded_data.y0;
             u0 = loaded_data.u0;
@@ -106,6 +109,7 @@ parfor i=1:numsimulations
 
 
     % Save data for last 6 periods
+    saverange = [];
     switch VAR_save
         case 'last'
             saverange = (size(t_sol,1)-6*times_per_period):size(t_sol,1);
@@ -118,8 +122,10 @@ parfor i=1:numsimulations
     yi = yi_sol(saverange,:);
     ui = ui_sol(saverange,:);
     vi = vi_sol(saverange,:);
-    xi = position_apply_PBC(xi, p.box_length);
-    yi = position_apply_PBC(yi, p.box_length); 
+    if strcmp(VAR_IC, 'PBC')
+        xi = position_apply_PBC(xi, p.box_length);
+        yi = position_apply_PBC(yi, p.box_length);
+    end
 
     % Function to save file within parfor loop
     parsave(strcat(folder,"/",filename), p,ti,xi,yi,ui,vi)
