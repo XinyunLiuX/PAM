@@ -19,7 +19,7 @@ VAR_R = 10;
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
 batch_omega   = [2];
-batch_epsilon = 0:0.05:1;
+batch_epsilon = 0:0.05:0.9;
 
 [batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
 
