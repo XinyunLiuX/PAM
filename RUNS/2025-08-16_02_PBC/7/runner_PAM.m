@@ -18,7 +18,7 @@ VAR_R = 10;
 
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
-batch_omega   = [1 2 3 4];
+batch_omega   = [2 3 4];
 batch_epsilon = 0:0.3:0.9;
 
 [batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
@@ -79,10 +79,10 @@ parfor i=1:numsimulations
             IC_filePath = strcat(BASE_FOLDER, 'IC');
             loaded_data = load(fullfile(IC_filePath, 'vortex_N700.mat'));
             disp('Hit initial conditions.')
-            x0 = loaded_data.x0;
-            y0 = loaded_data.y0;
-            u0 = loaded_data.u0;
-            v0 = loaded_data.v0;
+            x0 = loaded_data.x0.';
+            y0 = loaded_data.y0.';
+            u0 = loaded_data.u0.';
+            v0 = loaded_data.v0.';
             if N ~= length(x0)
                 error("Particle Number is Not Compatible with Initial Conditions")
             end

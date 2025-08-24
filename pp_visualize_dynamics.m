@@ -3,7 +3,7 @@ function pp_visualize_dynamics(filename,folder)
 % Also, only remain the particle movie
 
     % Check if file has already been created
-    if isfile(strcat(folder,"/PP_",filename))
+    if isfile(strcat(folder,'/movie_particles_',filename(1:end-4), '.avi'))
         disp(strcat("File exists. Skipping... ",filename))
         return % Stop function to skip to next loop iteration
     else
@@ -31,58 +31,44 @@ load(strcat(folder,"/",filename))
 
 % Need to do the average of N/2 and then loop in time
 
-    meandistance = zeros(size(ti,1),1);
 
-    ri = sqrt(xi.^2+yi.^2);
-
-    % Max radius to fix figures axes
-    rmax = ceil(max(max(ri)));
-    xLimits = [-1 1]*rmax;  
-    yLimits = xLimits;  
-   
-    
-
-
-% In meandistance we have the mean distance of the N/2 particles thar are
-% closer to each other. The binsize is 3 times this distance so there are
-% ~3x3=9 particles per bin (continuum limit)
-binsize = mean(meandistance)*8;
-
-border_mean_r = zeros(size(ti));
-border_r_deformation = zeros(size(ti));
-
+xmin = floor(min(min(xi)));
+xmax = ceil(max(max(xi)));
+ymin = floor(min(min(yi)));
+ymax = ceil(max(max(yi)));  
+% Max radius to fix figures axes
 
 
  movifilename = strcat(folder,'/movie_particles_',filename(1:end-4));
- vidfile2 = VideoWriter(movifilename);                               
- vidfile2.Quality = 75;
- vidfile2.FrameRate = 10;
+ vidfile = VideoWriter(movifilename);                               
+ vidfile.Quality = 75;
+ vidfile.FrameRate = 10;
 
- open(vidfile2);
- fig4 = figure('visible','off');
+ open(vidfile); 
 
- 
+% Prepare figure (offscreen)
+fig = figure('Visible','off');
+ax = axes(fig);
+axis(ax,'square');
+xlim(ax, [xmin xmax]*1.1);
+ylim(ax, [ymin ymax]*1.1);
+set(fig,'Color','w');
+
+scatterPts = scatter(ax, xi(1,:), yi(1,:), 20, 'b', 'filled');
+
+scatterPts.LineWidth = 0.6;
+scatterPts.MarkerEdgeColor = 'k';
+scatterPts.MarkerFaceAlpha = 0.5;
+scatterPts.MarkerFaceColor = [0 0.4470 0.7410];
+
 for j=1:size(ti,1)
-    % disp(strcat('Loop 2 j = ', num2str(j)))
-	
-	% --------------------
-    % Plot cloud of points with border
-    set(0,'CurrentFigure',fig4)
-    set(gcf,'color','w');
-
-    scatter(xi(j,:),yi(j,:),"filled",'b'); 
-	hold on
-    scatter(0,0,100,"filled",'g'); % Origin
-    scatter(mean(xi(j,:)),mean(yi(j,:)),100,"filled",'r'); % Center of Mass
-    xlim(xLimits)
-    ylim(yLimits)    
-    axis square
-    hold off
-
+    scatterPts.XData = xi(j,:);
+    scatterPts.YData = yi(j,:);
     frame = getframe(gcf);
-    writeVideo(vidfile2, frame);
+    writeVideo(vidfile, frame);
 end
 
- close(vidfile2);
-    
+ close(vidfile);
+ close(fig);   
+
 end
