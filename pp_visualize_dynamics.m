@@ -54,7 +54,7 @@ xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
 
-scatterPts = scatter(ax, xi(1,:), yi(1,:), 20, 'b', 'filled');
+scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
 
 scatterPts.LineWidth = 0.6;
 scatterPts.MarkerEdgeColor = 'k';
