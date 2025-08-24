@@ -41,7 +41,7 @@ ymax = ceil(max(max(yi)));
 
  movifilename = strcat(folder,'/movie_particles_',filename(1:end-4));
  vidfile = VideoWriter(movifilename);                               
- vidfile.Quality = 85;
+ vidfile.Quality = 75;
  vidfile.FrameRate = 10;
 
  open(vidfile); 
