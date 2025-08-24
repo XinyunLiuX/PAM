@@ -41,7 +41,7 @@ ymax = ceil(max(max(yi)));
 
  movifilename = strcat(folder,'/movie_particles_',filename(1:end-4));
  vidfile = VideoWriter(movifilename);                               
- vidfile.Quality = 75;
+ vidfile.Quality = 85;
  vidfile.FrameRate = 10;
 
  open(vidfile); 
@@ -54,7 +54,7 @@ xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
 
-scatterPts = scatter(ax, xi(1,:), yi(1,:), 20, 'b', 'filled');
+scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
 
 scatterPts.LineWidth = 0.6;
 scatterPts.MarkerEdgeColor = 'k';
