@@ -48,7 +48,7 @@ ymax = ceil(max(max(yi)));
 
 % Prepare figure (offscreen)
 fig = figure('Visible','off');
-
+ax = axes(fig);
 
 scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
 
@@ -57,11 +57,12 @@ scatterPts.MarkerEdgeColor = 'k';
 scatterPts.MarkerFaceAlpha = 0.5;
 scatterPts.MarkerFaceColor = [0 0.4470 0.7410];
 
-ax = axes(fig);
+
 xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
 axis(ax, 'equal');
+axis(ax, 'square');
 
 for j=1:size(ti,1)
     scatterPts.XData = xi(j,:);
