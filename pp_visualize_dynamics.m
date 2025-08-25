@@ -62,7 +62,6 @@ xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
 axis(ax, 'equal');
-axis(ax, 'square');
 
 for j=1:size(ti,1)
     scatterPts.XData = xi(j,:);
