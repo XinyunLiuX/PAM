@@ -49,10 +49,10 @@ ymax = ceil(max(max(yi)));
 % Prepare figure (offscreen)
 fig = figure('Visible','off');
 ax = axes(fig);
-axis equal
 xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
+axis equal
 
 scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
 
