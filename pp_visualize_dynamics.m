@@ -49,7 +49,7 @@ ymax = ceil(max(max(yi)));
 % Prepare figure (offscreen)
 fig = figure('Visible','off');
 ax = axes(fig);
-axis(ax,'square');
+axis equal
 xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
