@@ -52,7 +52,6 @@ ax = axes(fig);
 xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
-axis equal
 
 scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
 
@@ -60,6 +59,7 @@ scatterPts.LineWidth = 0.6;
 scatterPts.MarkerEdgeColor = 'k';
 scatterPts.MarkerFaceAlpha = 0.5;
 scatterPts.MarkerFaceColor = [0 0.4470 0.7410];
+axis equal
 
 for j=1:size(ti,1)
     scatterPts.XData = xi(j,:);
