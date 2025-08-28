@@ -19,13 +19,6 @@ fprintf(1, 'Now reading %s\n', filename);
 load(strcat(folder,"/",filename))
 
 
-% figure('visible','off')
-% surf(peaks(256));
-% CM = colormap(bluewhitered);
-% colormap;
-% vid = (CM(:,1) == 1) & (CM(:,2) == 1) & (CM(:,3) == 1)
-% CM
-% Ckeyboard
 
 %% First loop in time to get Triangulation -> bin size
 
@@ -49,8 +42,7 @@ ymax = ceil(max(max(yi)));
 % Prepare figure (offscreen)
 fig = figure('Visible','off');
 ax = axes(fig);
-
-scatterPts = scatter(ax, xi(1,:), yi(1,:), 40, 'b', 'filled');
+scatterPts = scatter(ax, xi(1,:), yi(1,:), 30, 'b', 'filled');
 
 scatterPts.LineWidth = 0.6;
 scatterPts.MarkerEdgeColor = 'k';
@@ -62,11 +54,19 @@ xlim(ax, [xmin xmax]*1.1);
 ylim(ax, [ymin ymax]*1.1);
 set(fig,'Color','w');
 axis(ax, 'equal');
+axis(ax,'manual');
+box(ax,'on');
+
+ax.XTickMode = 'auto';
+ax.YTickMode = 'auto';
+ax.Layer = 'top';         % make sure ticks/labels are drawn
+ax.LineWidth = 0.5;
+ax.TickDir = 'out';
 
 for j=1:size(ti,1)
     scatterPts.XData = xi(j,:);
     scatterPts.YData = yi(j,:);
-    frame = getframe(gcf);
+    frame = getframe(fig);
     writeVideo(vidfile, frame);
 end
 
