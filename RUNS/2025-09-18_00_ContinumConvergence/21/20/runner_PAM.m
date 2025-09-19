@@ -18,22 +18,23 @@ VAR_R = 10;
 
 % PARAMETERS FOR BATCH
 % We are going to do a sweep in omega & epsilon
-batch_omega   = 2:0.1:4;
+%batch_omega   = 2:0.1:4;
+batch_N   = 700:200:2100;
 batch_epsilon = 0:0.1:0.9;
 
-[batch_omega,batch_epsilon] = meshgrid(batch_omega,batch_epsilon);
+[batch_N,batch_epsilon] = meshgrid(batch_N,batch_epsilon);
 
-numsimulations = size(batch_omega(:),1);
+numsimulations = size(batch_N(:),1);
 
 parfor i=1:numsimulations
 
     % Model parameters
-    N       = 700*8;                % Number of particles
+    N       = batch_N(i);         % Number of particles
     tau     = 1.0;                % Relaxation time
     epsilon = batch_epsilon(i);   % Forcing amplitude (needs to be < 1)
-    omega   = batch_omega(i);     % Forcing frequency
+    omega   = 2.5;                % Forcing frequency
     T       = 2*pi/omega;         % Forcing period
-    alpha   = 1/8;                  % Interaction force constant
+    alpha   = N/700;              % Interaction force constant
     p_repul = 2;                  % Interaction force power (must be integer > 1)
 
     % Numerical tolerances
