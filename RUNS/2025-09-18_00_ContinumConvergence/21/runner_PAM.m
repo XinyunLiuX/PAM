@@ -51,7 +51,7 @@ parfor i=1:numsimulations
     tspan = 0:(T/times_per_period):(T*number_of_periods);
 
     % Filename
-    filename = strcat("omega_",num2str(omega,'%.2f'),"_epsilon_",num2str(epsilon,'%.2f'),".mat");
+    filename = strcat("omega_",num2str(omega,'%.2f'),"_epsilon_",num2str(epsilon,'%.2f'),"_N_",num2str(N,'%d'), ".mat");
     
     % Check if simulation already done
     if isfile(strcat(folder,"/",filename))
